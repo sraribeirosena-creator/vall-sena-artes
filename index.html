@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0757b8">
+<title>Vall Sena Artes Personalizadas</title>
+<link rel="manifest" href="manifest.json">
+<style>
+:root{--blue:#0757b8;--blue2:#0b76e8;--gold:#e9b949;--bg:#f5f8fc;--text:#17324d}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+.app{max-width:520px;margin:auto;min-height:100vh;background:white;box-shadow:0 0 30px #0001}
+header{background:linear-gradient(135deg,#06458f,#0b76e8);color:white;padding:20px}
+.brand{font-size:25px;font-weight:800;letter-spacing:1px}.sub{font-size:13px;opacity:.9}
+main{padding:18px 16px 90px}.hero{background:#eef6ff;border-radius:18px;padding:18px;margin-bottom:16px}.hero h1{margin:0 0 8px;font-size:23px}.hero p{margin:0 0 14px}
+input,select{width:100%;padding:13px;border:1px solid #d5e0ec;border-radius:12px;margin:7px 0;font-size:15px}
+button{border:0;border-radius:12px;padding:13px 16px;font-weight:700;cursor:pointer}.primary{background:var(--blue);color:white}.gold{background:var(--gold);color:#172b42}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.cat,.card{border:1px solid #e1e9f2;border-radius:16px;padding:12px;background:white}.cat{font-weight:700;text-align:center}
+.cat span{font-size:30px;display:block;margin-bottom:7px}.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.thumb{height:125px;border-radius:12px;background:linear-gradient(135deg,#d9eaff,#fff4d1);display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800;color:#245}
+.price{font-weight:800;color:var(--blue);margin:8px 0}.small{font-size:12px;color:#667}
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);display:flex;background:white;border-top:1px solid #ddd;z-index:5}
+nav button{flex:1;background:white;border-radius:0;padding:12px 4px;font-size:12px;color:#355}nav button.active{color:var(--blue);font-weight:800}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.box{padding:14px;border:1px solid #dce6f0;border-radius:14px;margin:10px 0}
+.hidden{display:none}.back{background:none;color:white;padding:0 0 12px}.total{font-size:20px;font-weight:800}
+</style>
+</head>
+<body>
+<div class="app">
+<header><button class="back" onclick="home()">← Início</button><div class="brand">♕ VALL SENA</div><div class="sub">Artes Personalizadas • Faça tudo em um só lugar</div></header>
+<main id="app"></main>
+<nav>
+<button onclick="home()" id="nhome">⌂<br>Início</button>
+<button onclick="showCategories()" id="ncat">▦<br>Categorias</button>
+<button onclick="showCart()" id="ncart">🛒<br>Carrinho</button>
+<button onclick="showOrders()" id="norders">▣<br>Pedidos</button>
+</nav>
+</div>
+<script>
+const products=[
+{id:1,cat:'Convites',name:'Convite de Aniversário',price:9.90,emoji:'🎂'},
+{id:2,cat:'Casamento',name:'Convite de Casamento',price:14.90,emoji:'💍'},
+{id:3,cat:'Festas',name:'Kit Festa Completo',price:49.90,emoji:'🎉'},
+{id:4,cat:'Figurinhas',name:'Figurinhas WhatsApp',price:14.90,emoji:'💬'},
+{id:5,cat:'Stories',name:'Kit Stories',price:12.90,emoji:'📸'},
+{id:6,cat:'Etiquetas',name:'Etiquetas e Adesivos',price:9.90,emoji:'🏷️'},
+{id:7,cat:'Topo de Bolo',name:'Topo de Bolo Personalizado',price:12.90,emoji:'🎂'},
+{id:8,cat:'Impressão',name:'Arquivo para Imprimir',price:19.90,emoji:'🖨️'}
+];
+let cart=JSON.parse(localStorage.getItem('vallCart')||'[]');
+function save(){localStorage.setItem('vallCart',JSON.stringify(cart))}
+function home(){
+document.getElementById('app').innerHTML=`<section class="hero"><h1>Transforme sua ideia em uma arte especial ✨</h1><p>Crie, personalize e compre tudo em um só lugar.</p><input placeholder="🔎 Buscar modelos..." oninput="search(this.value)"><button class="gold" onclick="showCategories()">Começar agora</button></section>
+<h2>Categorias</h2><div class="grid">
+${[['🎂','Convites'],['💍','Casamento'],['🎉','Festas'],['💬','Figurinhas'],['📸','Stories'],['🏷️','Etiquetas'],['🎂','Topo de Bolo'],['🖨️','Impressão']].map(x=>`<button class="cat" onclick="showProducts('${x[1]}')"><span>${x[0]}</span>${x[1]}</button>`).join('')}</div>
+<div class="box"><b>💙 Vall Sena Artes Personalizadas</b><p class="small">Escolha um modelo, personalize e receba seu arquivo digital.</p></div>`;
+activate('nhome')
+}
+function search(q){let a=products.filter(p=>(p.name+p.cat).toLowerCase().includes(q.toLowerCase()));renderProducts(a,'Resultados')}
+function showCategories(){renderProducts(products,'Categorias');activate('ncat')}
+function showProducts(cat){renderProducts(products.filter(p=>p.cat==cat),cat)}
+function renderProducts(a,title){document.getElementById('app').innerHTML=`<h2>${title}</h2><div class="cards">${a.map(p=>`<div class="card"><div class="thumb">${p.emoji}<br>${p.name}</div><div class="small">${p.cat}</div><div class="price">R$ ${p.price.toFixed(2).replace('.',',')}</div><button class="primary" onclick="customize(${p.id})">Personalizar</button></div>`).join('')}</div>`}
+function customize(id){let p=products.find(x=>x.id==id);document.getElementById('app').innerHTML=`<h2>Personalizar arte</h2><div class="box"><div class="thumb">${p.emoji}<br>${p.name}</div></div><label>Nome</label><input id="name" placeholder="Ex.: Vall e Thiago"><label>Data</label><input id="date" placeholder="Ex.: 25/04/2027"><label>Frase</label><input id="phrase" placeholder="Sua frase especial"><label>Observações</label><input id="obs" placeholder="Cores, tema ou detalhes"><button class="primary" onclick="addToCart(${id})">Adicionar ao carrinho • R$ ${p.price.toFixed(2).replace('.',',')}</button>`}
+function addToCart(id){let p=products.find(x=>x.id==id);cart.push({...p,custom:{name:val('name'),date:val('date'),phrase:val('phrase'),obs:val('obs')}});save();showCart()}
+function val(id){return document.getElementById(id)?.value||''}
+function showCart(){let total=cart.reduce((s,p)=>s+p.price,0);document.getElementById('app').innerHTML=`<h2>Meu Carrinho</h2>${cart.length?cart.map((p,i)=>`<div class="box"><div class="row"><b>${p.name}</b><b>R$ ${p.price.toFixed(2).replace('.',',')}</b></div><div class="small">${p.custom?.name||''} ${p.custom?.date?'• '+p.custom.date:''}</div><button onclick="removeItem(${i})">Remover</button></div>`).join(''):`<div class="box">Seu carrinho está vazio.</div>`}<div class="box"><div class="row"><span>Total</span><span class="total">R$ ${total.toFixed(2).replace('.',',')}</span></div>${cart.length?'<button class="primary" onclick="checkout()">Finalizar compra</button>':''}</div>`;activate('ncart')}
+function removeItem(i){cart.splice(i,1);save();showCart()}
+function checkout(){let orders=JSON.parse(localStorage.getItem('vallOrders')||'[]');orders.unshift({id:Math.floor(Math.random()*90000+10000),items:cart,total:cart.reduce((s,p)=>s+p.price,0),status:'Aguardando pagamento',date:new Date().toLocaleDateString('pt-BR')});localStorage.setItem('vallOrders',JSON.stringify(orders));cart=[];save();showOrders()}
+function showOrders(){let o=JSON.parse(localStorage.getItem('vallOrders')||'[]');document.getElementById('app').innerHTML=`<h2>Meus Pedidos</h2>${o.length?o.map(x=>`<div class="box"><div class="row"><b>Pedido #${x.id}</b><b>R$ ${x.total.toFixed(2).replace('.',',')}</b></div><div class="small">${x.date} • ${x.status}</div></div>`).join(''):'<div class="box">Você ainda não tem pedidos.</div>'}`;activate('norders')}
+function activate(id){document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));document.getElementById(id)?.classList.add('active')}
+home();
+</script>
+</body></html>
