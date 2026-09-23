@@ -1,195 +1,1314 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <meta name="theme-color" content="#0757b8">
-<meta name="description" content="Vall Sena Artes Personalizadas — faça tudo em um só lugar.">
+
 <title>Vall Sena Artes Personalizadas</title>
+
+<!-- FONTES -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
 <style>
+
 :root{
-  --blue:#0757b8; --blue2:#0b76e8; --navy:#062d61;
-  --gold:#d9a52b; --gold2:#f3c85b; --cream:#fffaf0;
-  --ink:#102d50; --muted:#60748b; --white:#fff;
-  --line:#dce7f2; --soft:#eef7ff;
+  --azul:#0757b8;
+  --azul-escuro:#06366f;
+  --azul-claro:#eaf5ff;
+  --dourado:#d9a928;
+  --dourado-claro:#f5d879;
+  --branco:#ffffff;
+  --texto:#18324d;
+  --cinza:#6d7b89;
+  --fundo:#f7fbff;
+  --borda:#dce8f3;
+  --verde:#168447;
 }
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f8fc;color:var(--ink)}
-button,input,select{font:inherit}
-button{cursor:pointer}
-.app{max-width:560px;margin:auto;background:#fff;min-height:100vh;box-shadow:0 0 30px #0b3b6715}
-.topbar{background:linear-gradient(135deg,var(--navy),var(--blue),var(--blue2));color:#fff;padding:24px 20px 28px;border-bottom:4px solid var(--gold)}
-.brand{display:flex;align-items:center;gap:12px}
-.logo{width:58px;height:58px;border:2px solid var(--gold2);border-radius:50%;display:grid;place-items:center;font-family:Georgia,serif;font-size:25px;font-weight:bold;color:#fff;box-shadow:0 0 0 4px #ffffff18}
-.brand h1{margin:0;font-family:Georgia,serif;font-size:28px;line-height:1}
-.brand small{display:block;margin-top:5px;font-size:11px;letter-spacing:2px;color:#f7e2a4}
-.tagline{font-family:Georgia,serif;font-style:italic;font-size:17px;margin:18px 0 0;color:#fff}
-.hero{margin:18px;background:linear-gradient(135deg,#edf7ff,#fffdf3);border:1px solid #d7e6f5;border-radius:24px;padding:22px;position:relative;overflow:hidden}
-.hero:after{content:"✦";position:absolute;right:18px;top:8px;color:var(--gold2);font-size:42px}
-.hero h2{font-family:Georgia,serif;font-size:27px;margin:0 35px 8px 0;color:var(--navy)}
-.hero p{margin:0 0 16px;color:#38516c;line-height:1.45}
-.search{width:100%;padding:14px 16px;border:1px solid #cdddeb;border-radius:16px;background:#fff;outline:none}
-.search:focus{border-color:var(--blue)}
-.gold-btn,.blue-btn{border:0;border-radius:14px;padding:13px 18px;font-weight:800}
-.gold-btn{background:linear-gradient(#f7d56f,#e9b93c);color:#152d4a}
-.blue-btn{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff}
-.hero .gold-btn{margin-top:12px}
-.section{padding:0 18px;margin:24px 0}
-.section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}
-.section-title h2{margin:0;font-family:Georgia,serif;font-size:25px;color:var(--navy)}
-.section-title span{font-size:12px;color:var(--blue);font-weight:bold}
-.categories{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
-.cat{border:1px solid var(--line);background:#fff;border-radius:15px;padding:11px 5px;text-align:center;color:var(--ink)}
-.cat .ico{font-size:23px}.cat b{display:block;font-size:11px;margin-top:4px}
-.products{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.card{border:1px solid #d8e4ef;border-radius:18px;background:#fff;overflow:hidden;box-shadow:0 4px 15px #0a4b8b0b}
-.art{height:138px;padding:15px;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;background:linear-gradient(135deg,#eaf6ff,#fff5d7)}
-.art:before,.art:after{content:"";position:absolute;border:1px solid var(--gold2);border-radius:50%}
-.art:before{width:82px;height:82px}.art:after{width:100px;height:100px}
-.art-inner{position:relative;z-index:1;font-family:Georgia,serif;font-size:19px;font-weight:bold;color:var(--navy)}
-.art-inner small{display:block;font:11px Arial;margin-top:6px;color:#55718e}
-.card-body{padding:11px}
-.badge{font-size:10px;color:var(--blue);font-weight:bold}
-.card h3{font-family:Georgia,serif;font-size:16px;margin:5px 0;color:var(--navy)}
-.card p{font-size:11px;color:var(--muted);min-height:30px;margin:0 0 7px}
-.price{font-size:17px;font-weight:900;color:var(--blue);margin:7px 0}
-.card .blue-btn{width:100%;padding:10px;font-size:12px}
-.banner{margin:22px 18px;padding:20px;border-radius:22px;background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;text-align:center;border:2px solid var(--gold)}
-.banner strong{display:block;font-family:Georgia,serif;font-size:21px}.banner span{font-size:12px;opacity:.9}
-.footer-space{height:86px}
-.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(560px,100%);height:70px;background:#fff;border-top:1px solid #d8e2ec;display:grid;grid-template-columns:repeat(4,1fr);z-index:20}
-.nav{border:0;background:none;color:#4d647b;font-size:11px;font-weight:bold}.nav .nicon{display:block;font-size:20px;margin-bottom:2px}.nav.active{color:var(--blue)}
-.modal{position:fixed;inset:0;background:#001a3b88;display:none;align-items:flex-end;justify-content:center;z-index:50}
-.modal.show{display:flex}
-.sheet{width:min(560px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:26px 26px 0 0;padding:22px}
-.sheet h2{margin:0 0 5px;font-family:Georgia,serif;color:var(--navy)}
-.sheet .sub{color:var(--muted);font-size:13px;margin-bottom:15px}
-.field{margin:10px 0}.field label{display:block;font-size:12px;font-weight:bold;margin-bottom:5px}.field input,.field textarea{width:100%;padding:12px;border:1px solid #cfdeeb;border-radius:12px;outline:none}.field textarea{min-height:75px;resize:vertical}
-.actions{display:flex;gap:9px;margin-top:15px}.actions button{flex:1}
-.close{background:#eef4f9;color:var(--navy);border:0;border-radius:12px;padding:12px;font-weight:bold}
-.cart-list{font-size:13px;margin:12px 0}.cart-item{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #e7edf3}
-.empty{text-align:center;color:var(--muted);padding:25px}
-@media(max-width:390px){.categories{grid-template-columns:repeat(2,1fr)}.products{grid-template-columns:1fr}.brand h1{font-size:24px}}
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  background:var(--fundo);
+  color:var(--texto);
+  font-family:'Poppins',sans-serif;
+}
+
+button,
+input,
+textarea,
+select{
+  font-family:'Poppins',sans-serif;
+}
+
+button{
+  cursor:pointer;
+}
+
+/* =========================
+   CABEÇALHO
+========================= */
+
+header{
+  background:linear-gradient(135deg,#04346d,#0757b8,#1283e8);
+  color:white;
+  padding:25px 18px 30px;
+  position:relative;
+  overflow:hidden;
+}
+
+header:after{
+  content:"";
+  position:absolute;
+  width:260px;
+  height:260px;
+  border:2px solid rgba(255,215,120,.35);
+  border-radius:50%;
+  right:-100px;
+  top:-130px;
+}
+
+.topo{
+  max-width:1000px;
+  margin:auto;
+  position:relative;
+  z-index:2;
+}
+
+.logo{
+  text-align:center;
+}
+
+.logo-simbolo{
+  width:72px;
+  height:72px;
+  border:2px solid var(--dourado-claro);
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 8px;
+  font-family:'Great Vibes',cursive;
+  font-size:42px;
+  color:white;
+  box-shadow:0 0 0 5px rgba(255,255,255,.08);
+}
+
+.logo h1{
+  margin:0;
+  font-family:'Great Vibes',cursive;
+  font-size:55px;
+  font-weight:400;
+  color:white;
+  line-height:1;
+}
+
+.logo p{
+  margin:7px 0 0;
+  letter-spacing:2px;
+  font-size:12px;
+  font-weight:600;
+  color:#fff;
+}
+
+.frase-logo{
+  margin-top:12px;
+  font-family:'Playfair Display',serif;
+  font-size:15px;
+  color:#ffe8a2;
+}
+
+/* =========================
+   MENU
+========================= */
+
+.menu{
+  max-width:1000px;
+  margin:15px auto 0;
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.menu button{
+  background:rgba(255,255,255,.12);
+  color:white;
+  border:1px solid rgba(255,255,255,.25);
+  padding:9px 14px;
+  border-radius:30px;
+  font-size:12px;
+  font-weight:600;
+}
+
+/* =========================
+   CONTAINER
+========================= */
+
+.app{
+  max-width:1000px;
+  margin:auto;
+  padding:18px;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero{
+  background:linear-gradient(135deg,#edf7ff,#ffffff);
+  border:1px solid #d8e9f8;
+  border-radius:25px;
+  padding:28px 22px;
+  margin:5px 0 30px;
+  box-shadow:0 10px 30px rgba(4,65,125,.08);
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+
+.hero:before{
+  content:"✦";
+  position:absolute;
+  color:var(--dourado);
+  font-size:80px;
+  left:-15px;
+  top:-35px;
+  opacity:.18;
+}
+
+.hero h2{
+  font-family:'Playfair Display',serif;
+  font-size:30px;
+  margin:0 0 8px;
+  color:var(--azul-escuro);
+}
+
+.hero h2 span{
+  color:var(--dourado);
+}
+
+.hero p{
+  color:#526579;
+  margin:0 auto 20px;
+  max-width:600px;
+}
+
+.busca{
+  width:100%;
+  max-width:650px;
+  margin:auto;
+  display:flex;
+  background:white;
+  border:1px solid #d7e4ef;
+  border-radius:15px;
+  overflow:hidden;
+}
+
+.busca span{
+  padding:14px 0 14px 16px;
+  font-size:18px;
+}
+
+.busca input{
+  flex:1;
+  border:0;
+  outline:0;
+  padding:14px;
+  font-size:15px;
+}
+
+.btn-principal{
+  border:0;
+  background:linear-gradient(135deg,var(--dourado),#f0c64c);
+  color:#18324d;
+  font-weight:800;
+  padding:14px 25px;
+  border-radius:12px;
+  margin-top:16px;
+  box-shadow:0 7px 18px rgba(190,145,30,.25);
+}
+
+/* =========================
+   TITULOS
+========================= */
+
+.titulo{
+  font-family:'Playfair Display',serif;
+  font-size:29px;
+  color:var(--azul-escuro);
+  margin:28px 0 16px;
+}
+
+.subtitulo{
+  color:var(--cinza);
+  margin-top:-8px;
+  margin-bottom:18px;
+}
+
+/* =========================
+   CATEGORIAS
+========================= */
+
+.categorias{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+
+.categoria{
+  background:white;
+  border:1px solid var(--borda);
+  border-radius:18px;
+  padding:17px 8px;
+  text-align:center;
+  transition:.2s;
+}
+
+.categoria:hover{
+  transform:translateY(-3px);
+  border-color:var(--dourado);
+}
+
+.categoria .icone{
+  font-size:29px;
+}
+
+.categoria strong{
+  display:block;
+  margin-top:6px;
+  font-size:13px;
+}
+
+/* =========================
+   PRODUTOS
+========================= */
+
+.produtos{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:18px;
+}
+
+.produto{
+  background:white;
+  border:1px solid var(--borda);
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:0 7px 22px rgba(11,64,110,.06);
+  transition:.2s;
+}
+
+.produto:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 30px rgba(11,64,110,.12);
+}
+
+.produto-imagem{
+  height:190px;
+  background:linear-gradient(135deg,#dcefff,#fff6d9);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  overflow:hidden;
+}
+
+.produto-imagem:before{
+  content:"VALL SENA";
+  font-family:'Great Vibes',cursive;
+  font-size:27px;
+  color:var(--azul);
+  opacity:.13;
+  position:absolute;
+  transform:rotate(-12deg);
+}
+
+.produto-icone{
+  font-size:64px;
+  position:relative;
+  z-index:2;
+}
+
+.produto-conteudo{
+  padding:17px;
+}
+
+.produto-categoria{
+  color:var(--azul);
+  font-size:11px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:.6px;
+}
+
+.produto h3{
+  font-family:'Playfair Display',serif;
+  font-size:21px;
+  margin:5px 0;
+  color:var(--azul-escuro);
+}
+
+.produto p{
+  font-size:12px;
+  color:#68798a;
+  min-height:36px;
+  margin:6px 0;
+}
+
+.preco{
+  color:var(--azul);
+  font-family:'Montserrat',sans-serif;
+  font-size:20px;
+  font-weight:800;
+  margin:12px 0;
+}
+
+.btn{
+  width:100%;
+  border:0;
+  background:var(--azul);
+  color:white;
+  padding:12px;
+  border-radius:11px;
+  font-weight:700;
+  font-size:13px;
+}
+
+.btn:hover{
+  background:var(--azul-escuro);
+}
+
+.btn-dourado{
+  background:linear-gradient(135deg,var(--dourado),#f1ca59);
+  color:#16304c;
+}
+
+/* =========================
+   PERSONALIZAÇÃO
+========================= */
+
+.painel{
+  display:none;
+  background:white;
+  border:1px solid var(--borda);
+  border-radius:22px;
+  padding:22px;
+  margin-top:25px;
+  box-shadow:0 8px 30px rgba(0,50,100,.08);
+}
+
+.painel.ativo{
+  display:block;
+}
+
+.painel h2{
+  font-family:'Playfair Display',serif;
+  color:var(--azul-escuro);
+}
+
+.campo{
+  margin-bottom:15px;
+}
+
+.campo label{
+  display:block;
+  font-weight:600;
+  font-size:13px;
+  margin-bottom:6px;
+}
+
+.campo input,
+.campo textarea,
+.campo select{
+  width:100%;
+  padding:13px;
+  border:1px solid #d7e4ef;
+  border-radius:11px;
+  outline:0;
+  background:#fbfdff;
+}
+
+.campo textarea{
+  min-height:90px;
+  resize:vertical;
+}
+
+/* =========================
+   CARRINHO
+========================= */
+
+.carrinho{
+  background:white;
+  border:1px solid var(--borda);
+  border-radius:22px;
+  padding:20px;
+  margin-top:25px;
+}
+
+.item-carrinho{
+  border-bottom:1px solid #e8eef4;
+  padding:12px 0;
+}
+
+.item-carrinho:last-child{
+  border-bottom:0;
+}
+
+.total{
+  display:flex;
+  justify-content:space-between;
+  font-family:'Montserrat',sans-serif;
+  font-weight:800;
+  font-size:20px;
+  color:var(--azul-escuro);
+  margin-top:18px;
+}
+
+/* =========================
+   RODAPÉ
+========================= */
+
+footer{
+  margin-top:45px;
+  background:linear-gradient(135deg,#052e60,#0757b8);
+  color:white;
+  padding:30px 18px;
+  text-align:center;
+}
+
+.footer-logo{
+  font-family:'Great Vibes',cursive;
+  font-size:40px;
+  color:#fff;
+}
+
+.footer-dourado{
+  color:#f5d879;
+}
+
+footer p{
+  font-size:12px;
+  opacity:.9;
+}
+
+.linha-dourada{
+  width:100px;
+  height:2px;
+  background:#f0c64c;
+  margin:12px auto;
+}
+
+/* =========================
+   BARRA INFERIOR
+========================= */
+
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:white;
+  border-top:1px solid #dbe6ef;
+  height:67px;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  z-index:99;
+  box-shadow:0 -5px 20px rgba(0,0,0,.06);
+}
+
+.bottom-nav button{
+  border:0;
+  background:none;
+  color:#607282;
+  font-size:11px;
+  font-weight:600;
+}
+
+.bottom-nav .ativo{
+  color:var(--azul);
+}
+
+.bottom-nav span{
+  display:block;
+  font-size:20px;
+  margin-bottom:2px;
+}
+
+/* =========================
+   RESPONSIVO
+========================= */
+
+@media(max-width:700px){
+
+  .logo h1{
+    font-size:49px;
+  }
+
+  .categorias{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .produtos{
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+  }
+
+  .produto-imagem{
+    height:145px;
+  }
+
+  .produto-icone{
+    font-size:50px;
+  }
+
+  .produto-conteudo{
+    padding:12px;
+  }
+
+  .produto h3{
+    font-size:17px;
+  }
+
+  .produto p{
+    font-size:11px;
+  }
+
+  .preco{
+    font-size:17px;
+  }
+
+  .btn{
+    padding:10px 5px;
+    font-size:12px;
+  }
+
+}
+
+@media(max-width:400px){
+
+  .hero h2{
+    font-size:25px;
+  }
+
+  .logo h1{
+    font-size:43px;
+  }
+
+  .produto-imagem{
+    height:125px;
+  }
+
+}
+
 </style>
 </head>
+
 <body>
-<div class="app">
-<header class="topbar">
-  <div class="brand">
-    <div class="logo">VS</div>
-    <div><h1>Vall Sena</h1><small>ARTES PERSONALIZADAS</small></div>
-  </div>
-  <div class="tagline">♡ Faça tudo em um só lugar!</div>
+
+<header>
+
+<div class="topo">
+
+<div class="logo">
+
+<div class="logo-simbolo">VS</div>
+
+<h1>Vall Sena</h1>
+
+<p>ARTES PERSONALIZADAS</p>
+
+<div class="frase-logo">
+Faça tudo em um só lugar ✦
+</div>
+
+</div>
+
+<div class="menu">
+<button onclick="irPara('inicio')">Início</button>
+<button onclick="irPara('produtos')">Produtos</button>
+<button onclick="irPara('categorias')">Categorias</button>
+<button onclick="irPara('carrinho')">Carrinho</button>
+</div>
+
+</div>
+
 </header>
 
-<section class="hero">
-  <h2>Transforme sua ideia em uma arte especial ✨</h2>
-  <p>Crie, personalize e compre seus produtos digitais com o estilo elegante azul, branco e dourado da Vall Sena.</p>
-  <input class="search" id="search" placeholder="🔎 Buscar modelos...">
-  <button class="gold-btn" onclick="document.getElementById('produtos').scrollIntoView()">Começar agora →</button>
-</section>
 
-<section class="section">
-  <div class="section-title"><h2>Ocasiões</h2><span>Ver tudo</span></div>
-  <div class="categories">
-    <button class="cat" onclick="filtrar('Convites')"><span class="ico">🎂</span><b>Aniversário</b></button>
-    <button class="cat" onclick="filtrar('Casamento')"><span class="ico">💍</span><b>Casamento</b></button>
-    <button class="cat" onclick="filtrar('Festas')"><span class="ico">🎉</span><b>Festas</b></button>
-    <button class="cat" onclick="filtrar('Figurinhas')"><span class="ico">💬</span><b>Figurinhas</b></button>
-    <button class="cat" onclick="filtrar('Bebê')"><span class="ico">🍼</span><b>Chá de bebê</b></button>
-    <button class="cat" onclick="filtrar('Fitness')"><span class="ico">🏋️</span><b>Academia</b></button>
-    <button class="cat" onclick="filtrar('Lembrancinhas')"><span class="ico">🎁</span><b>Lembrancinhas</b></button>
-    <button class="cat" onclick="filtrar('Todos')"><span class="ico">⭐</span><b>Todos</b></button>
-  </div>
-</section>
+<main class="app">
 
-<section class="section" id="produtos">
-  <div class="section-title"><h2>Modelos em destaque</h2><span id="resultado">10 modelos</span></div>
-  <div class="products" id="grid"></div>
-</section>
+<section id="inicio" class="hero">
 
-<div class="banner">
-  <strong>Vall Sena ♡</strong>
-  <span>Modelos exclusivos • Personalização • Tudo no mesmo estilo</span>
+<h2>
+Transforme sua ideia em uma
+<span>arte especial</span> ✨
+</h2>
+
+<p>
+Crie, personalize e compre suas artes favoritas
+de forma rápida e elegante.
+</p>
+
+<div class="busca">
+<span>🔎</span>
+<input id="busca" type="text" placeholder="Buscar modelos...">
 </div>
 
-<div class="footer-space"></div>
-<nav class="bottom">
-  <button class="nav active" onclick="topo()"><span class="nicon">⌂</span>Início</button>
-  <button class="nav" onclick="document.getElementById('produtos').scrollIntoView()"><span class="nicon">▦</span>Categorias</button>
-  <button class="nav" onclick="abrirCarrinho()"><span class="nicon">🛒</span>Carrinho <sup id="count">0</sup></button>
-  <button class="nav" onclick="abrirCarrinho()"><span class="nicon">▣</span>Pedidos</button>
+<button class="btn-principal" onclick="irPara('produtos')">
+Começar agora →
+</button>
+
+</section>
+
+
+<section id="categorias">
+
+<h2 class="titulo">Categorias</h2>
+
+<p class="subtitulo">
+Encontre a arte perfeita para cada momento.
+</p>
+
+<div class="categorias">
+
+<div class="categoria" onclick="filtrar('Convites')">
+<div class="icone">🎂</div>
+<strong>Convites</strong>
+</div>
+
+<div class="categoria" onclick="filtrar('Casamento')">
+<div class="icone">💍</div>
+<strong>Casamento</strong>
+</div>
+
+<div class="categoria" onclick="filtrar('Festas')">
+<div class="icone">🎉</div>
+<strong>Festas</strong>
+</div>
+
+<div class="categoria" onclick="filtrar('Figurinhas')">
+<div class="icone">💬</div>
+<strong>Figurinhas</strong>
+</div>
+
+<div class="categoria" onclick="filtrar('Stories')">
+<div class="icone">📸</div>
+<strong>Stories</strong>
+</div>
+
+<div class="categoria" onclick="filtrar('Etiquetas')">
+<div class="icone">🏷️</div>
+<strong>Etiquetas</strong>
+</div>
+
+<div class="categoria" onclick="filtrar('Lembrancinhas')">
+<div class="icone">🎁</div>
+<strong>Lembrancinhas</strong>
+</div>
+
+<div class="categoria" onclick="filtrar('Impressão')">
+<div class="icone">🖨️</div>
+<strong>Impressão</strong>
+</div>
+
+</div>
+
+</section>
+
+
+<section id="produtos">
+
+<h2 class="titulo">Nossos produtos</h2>
+
+<p class="subtitulo">
+Escolha seu modelo e personalize do seu jeito.
+</p>
+
+<div id="listaProdutos" class="produtos"></div>
+
+</section>
+
+
+<section id="personalizacao" class="painel">
+
+<h2>✨ Personalize sua arte</h2>
+
+<p id="produtoEscolhido"></p>
+
+<div class="campo">
+<label>Nome</label>
+<input id="nome" placeholder="Digite o nome">
+</div>
+
+<div class="campo">
+<label>Data</label>
+<input id="data" type="date">
+</div>
+
+<div class="campo">
+<label>Frase</label>
+<textarea id="frase" placeholder="Digite a frase que deseja colocar na arte"></textarea>
+</div>
+
+<div class="campo">
+<label>Observações</label>
+<textarea id="observacoes" placeholder="Cores, detalhes ou outras informações"></textarea>
+</div>
+
+<button class="btn btn-dourado" onclick="adicionarCarrinho()">
+Adicionar ao carrinho ✨
+</button>
+
+</section>
+
+
+<section id="carrinho" class="carrinho">
+
+<h2 class="titulo">🛒 Meu carrinho</h2>
+
+<div id="listaCarrinho">
+<p>Seu carrinho está vazio.</p>
+</div>
+
+</section>
+
+
+</main>
+
+
+<footer>
+
+<div class="footer-logo">
+Vall Sena
+</div>
+
+<div class="linha-dourada"></div>
+
+<p class="footer-dourado">
+ARTES PERSONALIZADAS
+</p>
+
+<p>
+Faça tudo em um só lugar ✨
+</p>
+
+<p>
+© 2026 Vall Sena Artes Personalizadas
+</p>
+
+</footer>
+
+
+<nav class="bottom-nav">
+
+<button class="ativo" onclick="irPara('inicio')">
+<span>⌂</span>
+Início
+</button>
+
+<button onclick="irPara('categorias')">
+<span>▦</span>
+Categorias
+</button>
+
+<button onclick="irPara('carrinho')">
+<span>🛒</span>
+Carrinho
+</button>
+
+<button onclick="mostrarPedidos()">
+<span>▣</span>
+Pedidos
+</button>
+
 </nav>
-</div>
 
-<div class="modal" id="modal">
- <div class="sheet">
-   <h2 id="modalTitle">Personalizar sua arte</h2>
-   <div class="sub">Preencha os dados e adicione ao carrinho.</div>
-   <div class="field"><label>Nome</label><input id="nome" placeholder="Ex.: Juliana"></div>
-   <div class="field"><label>Data / horário</label><input id="data" placeholder="Ex.: 22/03/2027 às 19h"></div>
-   <div class="field"><label>Frase</label><input id="frase" placeholder="Sua frase especial"></div>
-   <div class="field"><label>Observações</label><textarea id="obs" placeholder="Cores, tema, detalhes..."></textarea></div>
-   <div class="actions"><button class="close" onclick="fechar()">Cancelar</button><button class="blue-btn" onclick="adicionar()">Adicionar ao carrinho</button></div>
- </div>
-</div>
-
-<div class="modal" id="cartModal">
- <div class="sheet">
-   <h2>🛒 Seu carrinho</h2>
-   <div id="cartList" class="cart-list"></div>
-   <div class="actions"><button class="close" onclick="fecharCarrinho()">Fechar</button><button class="gold-btn" onclick="finalizar()">Finalizar pedido</button></div>
- </div>
-</div>
 
 <script>
-const produtos=[
- {id:1,n:'Convite de Aniversário',cat:'Convites',pre:'9,90',ico:'🎂',desc:'Convite digital personalizado com nome, data e tema.'},
- {id:2,n:'Convite de Casamento',cat:'Casamento',pre:'14,90',ico:'💍',desc:'Convite elegante para casamento, noivado ou bodas.'},
- {id:3,n:'Kit Festa Completo',cat:'Festas',pre:'19,90',ico:'🎉',desc:'Kit com artes coordenadas para deixar sua festa completa.'},
- {id:4,n:'Figurinhas WhatsApp',cat:'Figurinhas',pre:'7,90',ico:'💬',desc:'Pacote de figurinhas personalizadas para WhatsApp e Stories.'},
- {id:5,n:'Convite Chá de Bebê',cat:'Bebê',pre:'12,90',ico:'🍼',desc:'Convite delicado para chá de bebê e chá revelação.'},
- {id:6,n:'Adesivos Personalizados',cat:'Lembrancinhas',pre:'9,90',ico:'🏷️',desc:'Adesivos com nome, tema e mensagem especial.'},
- {id:7,n:'Topper de Bolo',cat:'Festas',pre:'8,90',ico:'🎂',desc:'Topo de bolo pronto para imprimir e recortar.'},
- {id:8,n:'Tags para Lembrancinhas',cat:'Lembrancinhas',pre:'7,90',ico:'🎁',desc:'Tags delicadas para presentes e lembrancinhas.'},
- {id:9,n:'Stories Personalizados',cat:'Convites',pre:'9,90',ico:'📱',desc:'Arte vertical para divulgar seu evento nas redes.'},
- {id:10,n:'Kit Festa Premium',cat:'Festas',pre:'29,90',ico:'👑',desc:'Kit completo com identidade visual exclusiva Vall Sena.'}
-];
-let filtro='Todos', selecionado=null, cart=JSON.parse(localStorage.getItem('vallCart')||'[]');
 
-function render(){
- const q=(document.getElementById('search').value||'').toLowerCase();
- const arr=produtos.filter(p=>(filtro==='Todos'||p.cat===filtro)&&(!q||p.n.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q)));
- document.getElementById('resultado').textContent=arr.length+' modelo'+(arr.length===1?'':'s');
- document.getElementById('grid').innerHTML=arr.map(p=>`
- <article class="card">
-  <div class="art"><div class="art-inner">${p.ico}<br>${p.n}<small>Vall Sena • Azul & Dourado</small></div></div>
-  <div class="card-body"><span class="badge">${p.cat}</span><h3>${p.n}</h3><p>${p.desc}</p><div class="price">R$ ${p.pre}</div><button class="blue-btn" onclick="abrir(${p.id})">Personalizar</button></div>
- </article>`).join('')||'<div class="empty">Nenhum modelo encontrado.</div>';
- document.getElementById('count').textContent=cart.length;
+const produtos = [
+
+{
+id:1,
+nome:"Convite de Aniversário",
+categoria:"Convites",
+preco:9.90,
+icone:"🎂",
+descricao:"Convite digital personalizado com nome, data e horário."
+},
+
+{
+id:2,
+nome:"Convite de Casamento",
+categoria:"Casamento",
+preco:14.90,
+icone:"💍",
+descricao:"Convite elegante para casamento, noivado ou bodas."
+},
+
+{
+id:3,
+nome:"Kit Festa Completo",
+categoria:"Festas",
+preco:19.90,
+icone:"🎉",
+descricao:"Kit completo com artes coordenadas para sua festa."
+},
+
+{
+id:4,
+nome:"Figurinhas WhatsApp",
+categoria:"Figurinhas",
+preco:7.90,
+icone:"💬",
+descricao:"Pacote de figurinhas personalizadas para WhatsApp."
+},
+
+{
+id:5,
+nome:"Artes para Stories",
+categoria:"Stories",
+preco:8.90,
+icone:"📸",
+descricao:"Artes bonitas para divulgar seus momentos e produtos."
+},
+
+{
+id:6,
+nome:"Etiquetas Personalizadas",
+categoria:"Etiquetas",
+preco:6.90,
+icone:"🏷️",
+descricao:"Etiquetas personalizadas para presentes e lembrancinhas."
+},
+
+{
+id:7,
+nome:"Lembrancinhas",
+categoria:"Lembrancinhas",
+preco:12.90,
+icone:"🎁",
+descricao:"Artes especiais para lembrancinhas de festas."
+},
+
+{
+id:8,
+nome:"Topo de Bolo",
+categoria:"Festas",
+preco:8.90,
+icone:"🎂",
+descricao:"Topo de bolo personalizado para sua comemoração."
+},
+
+{
+id:9,
+nome:"Cartão Especial",
+categoria:"Convites",
+preco:5.90,
+icone:"💌",
+descricao:"Cartões personalizados para mensagens especiais."
+},
+
+{
+id:10,
+nome:"Arquivo para Imprimir",
+categoria:"Impressão",
+preco:10.90,
+icone:"🖨️",
+descricao:"Arquivo digital preparado para impressão."
 }
-function filtrar(c){filtro=c;document.getElementById('produtos').scrollIntoView();render()}
-document.getElementById('search').addEventListener('input',render);
-function abrir(id){selecionado=produtos.find(p=>p.id===id);document.getElementById('modalTitle').textContent='Personalizar • '+selecionado.n;document.getElementById('modal').classList.add('show')}
-function fechar(){document.getElementById('modal').classList.remove('show')}
-function adicionar(){
- if(!selecionado)return;
- cart.push({produto:selecionado.n,pre:selecionado.pre,nome:document.getElementById('nome').value,data:document.getElementById('data').value,frase:document.getElementById('frase').value});
- localStorage.setItem('vallCart',JSON.stringify(cart)); fechar(); render(); abrirCarrinho();
+
+];
+
+
+let carrinho =
+JSON.parse(localStorage.getItem("vallSenaCarrinho")) || [];
+
+let produtoAtual = null;
+
+
+/* =========================
+   MOSTRAR PRODUTOS
+========================= */
+
+function mostrarProdutos(lista=produtos){
+
+const area=document.getElementById("listaProdutos");
+
+area.innerHTML="";
+
+if(lista.length===0){
+
+area.innerHTML=
+"<p>Nenhum produto encontrado.</p>";
+
+return;
+
 }
-function abrirCarrinho(){
- document.getElementById('cartList').innerHTML=cart.length?cart.map((x,i)=>`<div class="cart-item"><span><b>${i+1}. ${x.produto}</b><br>${x.nome||'Sem nome'} • R$ ${x.pre}</span><button onclick="remover(${i})">✕</button></div>`).join(''):'<div class="empty">Seu carrinho está vazio.</div>';
- document.getElementById('cartModal').classList.add('show');
+
+lista.forEach(p=>{
+
+area.innerHTML += `
+
+<article class="produto">
+
+<div class="produto-imagem">
+<div class="produto-icone">${p.icone}</div>
+</div>
+
+<div class="produto-conteudo">
+
+<div class="produto-categoria">
+${p.categoria}
+</div>
+
+<h3>${p.nome}</h3>
+
+<p>${p.descricao}</p>
+
+<div class="preco">
+R$ ${p.preco.toFixed(2).replace(".",",")}
+</div>
+
+<button class="btn" onclick="personalizar(${p.id})">
+Personalizar
+</button>
+
+</div>
+
+</article>
+
+`;
+
+});
+
 }
-function fecharCarrinho(){document.getElementById('cartModal').classList.remove('show')}
-function remover(i){cart.splice(i,1);localStorage.setItem('vallCart',JSON.stringify(cart));render();abrirCarrinho()}
-function finalizar(){
- if(!cart.length){alert('Adicione um produto primeiro.');return}
- alert('Pedido registrado no protótipo! O pagamento online e a entrega automática serão conectados na próxima etapa.');
+
+
+/* =========================
+   PERSONALIZAR
+========================= */
+
+function personalizar(id){
+
+produtoAtual =
+produtos.find(p=>p.id===id);
+
+document.getElementById("produtoEscolhido").innerHTML =
+`Você escolheu: <strong>${produtoAtual.nome}</strong> — R$ ${produtoAtual.preco.toFixed(2).replace(".",",")}`;
+
+document.getElementById("personalizacao")
+.classList.add("ativo");
+
+document.getElementById("personalizacao")
+.scrollIntoView({behavior:"smooth"});
+
 }
-function topo(){window.scrollTo({top:0,behavior:'smooth'})}
-render();
+
+
+/* =========================
+   ADICIONAR CARRINHO
+========================= */
+
+function adicionarCarrinho(){
+
+if(!produtoAtual) return;
+
+const item={
+
+produto:produtoAtual.nome,
+
+preco:produtoAtual.preco,
+
+nome:document.getElementById("nome").value,
+
+data:document.getElementById("data").value,
+
+frase:document.getElementById("frase").value,
+
+observacoes:document.getElementById("observacoes").value
+
+};
+
+carrinho.push(item);
+
+localStorage.setItem(
+"vallSenaCarrinho",
+JSON.stringify(carrinho)
+);
+
+alert("✨ Arte adicionada ao carrinho!");
+
+mostrarCarrinho();
+
+document.getElementById("personalizacao")
+.classList.remove("ativo");
+
+}
+
+
+/* =========================
+   CARRINHO
+========================= */
+
+function mostrarCarrinho(){
+
+const area=document.getElementById("listaCarrinho");
+
+if(carrinho.length===0){
+
+area.innerHTML="<p>Seu carrinho está vazio.</p>";
+
+return;
+
+}
+
+let total=0;
+
+area.innerHTML="";
+
+carrinho.forEach((item,index)=>{
+
+total+=item.preco;
+
+area.innerHTML+=`
+
+<div class="item-carrinho">
+
+<strong>${item.produto}</strong>
+
+<br>
+
+<small>
+${item.nome ? "Nome: "+item.nome : ""}
+</small>
+
+<br>
+
+<small>
+${item.frase ? "Frase: "+item.frase : ""}
+</small>
+
+<div class="preco">
+R$ ${item.preco.toFixed(2).replace(".",",")}
+</div>
+
+<button
+onclick="removerItem(${index})"
+style="border:0;background:none;color:#c0392b;font-size:12px;">
+Remover
+</button>
+
+</div>
+
+`;
+
+});
+
+area.innerHTML+=`
+
+<div class="total">
+
+<span>Total</span>
+
+<span>
+R$ ${total.toFixed(2).replace(".",",")}
+</span>
+
+</div>
+
+<br>
+
+<button class="btn btn-dourado"
+onclick="finalizarPedido()">
+
+Finalizar pedido ✨
+
+</button>
+
+`;
+
+}
+
+
+function removerItem(index){
+
+carrinho.splice(index,1);
+
+localStorage.setItem(
+"vallSenaCarrinho",
+JSON.stringify(carrinho)
+);
+
+mostrarCarrinho();
+
+}
+
+
+/* =========================
+   PEDIDO
+========================= */
+
+function finalizarPedido(){
+
+if(carrinho.length===0){
+
+alert("Seu carrinho está vazio.");
+
+return;
+
+}
+
+let pedidos =
+JSON.parse(localStorage.getItem("vallSenaPedidos")) || [];
+
+pedidos.push({
+
+data:new Date().toLocaleString("pt-BR"),
+
+itens:carrinho
+
+});
+
+localStorage.setItem(
+"vallSenaPedidos",
+JSON.stringify(pedidos)
+);
+
+alert(
+"✨ Pedido registrado com sucesso!\n\nEm breve você poderá conectar o pagamento e a entrega das artes."
+);
+
+carrinho=[];
+
+localStorage.removeItem("vallSenaCarrinho");
+
+mostrarCarrinho();
+
+}
+
+
+/* =========================
+   PEDIDOS
+========================= */
+
+function mostrarPedidos(){
+
+const pedidos =
+JSON.parse(localStorage.getItem("vallSenaPedidos")) || [];
+
+if(pedidos.length===0){
+
+alert("Você ainda não possui pedidos.");
+
+return;
+
+}
+
+let mensagem="📦 MEUS PEDIDOS\n\n";
+
+pedidos.forEach((pedido,i)=>{
+
+mensagem+=
+`Pedido ${i+1} — ${pedido.data}\n`;
+
+pedido.itens.forEach(item=>{
+
+mensagem+=
+`• ${item.produto} — R$ ${item.preco.toFixed(2).replace(".",",")}\n`;
+
+});
+
+mensagem+="\n";
+
+});
+
+alert(mensagem);
+
+}
+
+
+/* =========================
+   FILTRO
+========================= */
+
+function filtrar(categoria){
+
+const lista =
+produtos.filter(
+p=>p.categoria===categoria
+);
+
+mostrarProdutos(lista);
+
+document.getElementById("produtos")
+.scrollIntoView({behavior:"smooth"});
+
+}
+
+
+/* =========================
+   BUSCA
+========================= */
+
+document
+.getElementById("busca")
+.addEventListener("input",function(){
+
+const termo=
+this.value.toLowerCase();
+
+const resultado=
+produtos.filter(p=>
+
+p.nome.toLowerCase().includes(termo) ||
+
+p.categoria.toLowerCase().includes(termo)
+
+);
+
+mostrarProdutos(resultado);
+
+});
+
+
+/* =========================
+   NAVEGAÇÃO
+========================= */
+
+function irPara(id){
+
+document
+.getElementById(id)
+.scrollIntoView({
+behavior:"smooth"
+});
+
+}
+
+
+/* =========================
+   INICIAR
+========================= */
+
+mostrarProdutos();
+
+mostrarCarrinho();
+
 </script>
+
 </body>
 </html>
