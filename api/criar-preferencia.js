@@ -11,13 +11,13 @@ export default async function handler(req, res) {
 
   if (!accessToken) {
     return res.status(500).json({
-      erro: "Access Token do Mercado Pago não configurado."
+      erro: "Token de acesso do Mercado Pago não configurado."
     });
   }
 
   if (!appUrl) {
     return res.status(500).json({
-      erro: "APP_URL não configurada."
+      erro: "APP_URL não definido."
     });
   }
 
@@ -26,27 +26,26 @@ export default async function handler(req, res) {
     2: { titulo: "Convite de Casamento", preco: 14.90 },
     3: { titulo: "Kit Festa Completo", preco: 19.90 },
     4: { titulo: "Figurinhas WhatsApp", preco: 7.90 },
-    5: { titulo: "Artes para Stories", preco: 8.90 },
+    5: { titulo: "Artes para Histórias", preco: 8.90 },
     6: { titulo: "Etiquetas Personalizadas", preco: 6.90 },
-    7: { titulo: "Lembrancinhas", preco: 12.90 },
+    7: { titulo: "Lembrancinhas", preco: 14.90 },
     8: { titulo: "Topo de Bolo", preco: 8.90 },
     9: { titulo: "Cartão Especial", preco: 5.90 },
     10: { titulo: "Arquivo para Imprimir", preco: 10.90 }
   };
 
   try {
-    const itens = Array.isArray(req.body?.itens)
-      ? req.body.itens
+    const items = Array.isArray(req.body?.items)
+      ? req.body.items
       : [];
 
-    if (!itens.length) {
+    if (!items.length) {
       return res.status(400).json({
         erro: "Carrinho vazio."
       });
     }
 
-    const items = itens.map(item => {
-
+    const itensMercadoPago = items.map((item) => {
       const produto = catalogo[Number(item.produtoId)];
 
       if (!produto) {
@@ -61,19 +60,19 @@ export default async function handler(req, res) {
         currency_id: "BRL",
         unit_price: produto.preco
       };
-
     });
 
-    const preferencia = {
-      items,
+    const baseUrl = appUrl.replace(/\/$/, "");
 
-      external_reference:
-        `VALLSENA-${Date.now()}`,
+    const preferencia = {
+      items: itensMercadoPago,
+
+      external_reference: `VALLSENA-${Date.now()}`,
 
       back_urls: {
-        success: `${appUrl}/?pagamento=sucesso`,
-        pending: `${appUrl}/?pagamento=pendente`,
-        failure: `${appUrl}/?pagamento=falhou`
+        success: `${baseUrl}/?pagamento=sucesso`,
+        pending: `${baseUrl}/?pagamento=pendente`,
+        failure: `${baseUrl}/?pagamento=falhou`
       },
 
       auto_return: "approved"
@@ -86,8 +85,7 @@ export default async function handler(req, res) {
 
         headers: {
           "Content-Type": "application/json",
-          "Authorization":
-            `Bearer ${accessToken}`
+          "Authorization": `Bearer ${accessToken}`
         },
 
         body: JSON.stringify(preferencia)
@@ -108,8 +106,13 @@ export default async function handler(req, res) {
     const url =
       ambiente === "PROD"
         ? dados.init_point
-        : (dados.sandbox_init_point ||
-           dados.init_point);
+        : (dados.sandbox_init_point || dados.init_point);
+
+    if (!url) {
+      return res.status(500).json({
+        erro: "Mercado Pago não retornou o link de pagamento."
+      });
+    }
 
     return res.status(200).json({
       url,
@@ -117,12 +120,8 @@ export default async function handler(req, res) {
     });
 
   } catch (erro) {
-
     return res.status(500).json({
-      erro:
-        erro.message ||
-        "Erro interno."
+      erro: erro.message || "Erro interno ao criar pagamento."
     });
-
   }
 }
