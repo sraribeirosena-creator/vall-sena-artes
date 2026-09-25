@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -1130,12 +1130,16 @@ R$ ${total.toFixed(2).replace(".",",")}
 
 </div>
 
+<p style="font-size:12px;color:#6d7b89;margin:10px 0 0;text-align:center;">
+🔒 Você será direcionado ao ambiente seguro do Mercado Pago para concluir o pagamento.
+</p>
+
 <br>
 
 <button class="btn btn-dourado"
 onclick="finalizarPedido()">
 
-Finalizar pedido ✨
+Pagar com Mercado Pago 🔒
 
 </button>
 
@@ -1172,6 +1176,44 @@ return;
 
 }
 
+const botao = document.querySelector('#carrinho .btn-dourado');
+if(botao){
+botao.disabled = true;
+botao.textContent = "Abrindo pagamento...";
+}
+
+const itens = carrinho.map(item => ({
+produtoId: produtos.find(p => p.nome === item.produto)?.id,
+nome: item.nome || "",
+data: item.data || "",
+frase: item.frase || "",
+observacoes: item.observacoes || ""
+}));
+
+fetch("/api/criar-preferencia",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({itens})
+})
+.then(async resposta => {
+
+const dados = await resposta.json();
+
+if(!resposta.ok){
+throw new Error(dados.erro || "Não foi possível criar o pagamento.");
+}
+
+return dados;
+
+})
+.then(dados => {
+
+if(!dados.url){
+throw new Error("O Mercado Pago não retornou o endereço de pagamento.");
+}
+
 let pedidos =
 JSON.parse(localStorage.getItem("vallSenaPedidos")) || [];
 
@@ -1179,7 +1221,11 @@ pedidos.push({
 
 data:new Date().toLocaleString("pt-BR"),
 
-itens:carrinho
+itens:carrinho,
+
+status:"Aguardando pagamento",
+
+payment_id:dados.preference_id || ""
 
 });
 
@@ -1188,19 +1234,27 @@ localStorage.setItem(
 JSON.stringify(pedidos)
 );
 
-alert(
-"✨ Pedido registrado com sucesso!\n\nEm breve você poderá conectar o pagamento e a entrega das artes."
-);
-
 carrinho=[];
-
 localStorage.removeItem("vallSenaCarrinho");
-
 mostrarCarrinho();
 
+window.location.href = dados.url;
+
+})
+.catch(erro => {
+
+alert("Não foi possível abrir o pagamento.
+
+" + erro.message);
+
+if(botao){
+botao.disabled = false;
+botao.textContent = "Pagar com Mercado Pago 🔒";
 }
 
+});
 
+}
 /* =========================
    PEDIDOS
 ========================= */
