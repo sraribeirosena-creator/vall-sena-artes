@@ -1,55 +1,74 @@
 export default async function handler(req, res) {
+  // Aceita somente POST
   if (req.method !== "POST") {
     return res.status(405).json({
       erro: "Método não permitido."
     });
   }
 
-  const accessToken = process.env.MP_ACCESS_TOKEN;
-  const appUrl = process.env.APP_URL;
-  const ambiente = process.env.MP_ENV || "TEST";
-
-  if (!accessToken) {
-    return res.status(500).json({
-      erro: "Token de acesso do Mercado Pago não configurado."
-    });
-  }
-
-  if (!appUrl) {
-    return res.status(500).json({
-      erro: "APP_URL não definido."
-    });
-  }
-
-  const catalogo = {
-    1: { titulo: "Convite de Aniversário", preco: 9.90 },
-    2: { titulo: "Convite de Casamento", preco: 14.90 },
-    3: { titulo: "Kit Festa Completo", preco: 19.90 },
-    4: { titulo: "Figurinhas WhatsApp", preco: 7.90 },
-    5: { titulo: "Artes para Histórias", preco: 8.90 },
-    6: { titulo: "Etiquetas Personalizadas", preco: 6.90 },
-    7: { titulo: "Lembrancinhas", preco: 14.90 },
-    8: { titulo: "Topo de Bolo", preco: 8.90 },
-    9: { titulo: "Cartão Especial", preco: 5.90 },
-    10: { titulo: "Arquivo para Imprimir", preco: 10.90 }
-  };
-
   try {
-    const items = Array.isArray(req.body?.items)
-      ? req.body.items
-      : [];
+    // Variáveis configuradas no Vercel
+    const accessToken = process.env.MP_ACCESS_TOKEN;
+    const appUrl = process.env.APP_URL;
+    const ambiente = process.env.MP_ENV || "TESTE";
 
-    if (!items.length) {
+    // Verifica o Access Token
+    if (!accessToken) {
+      return res.status(500).json({
+        erro: "Token de acesso do Mercado Pago não configurado."
+      });
+    }
+
+    // Verifica a URL do site
+    if (!appUrl) {
+      return res.status(500).json({
+        erro: "APP_URL não definido."
+      });
+    }
+
+    // Catálogo de produtos
+    const catalogo = {
+      1: {
+        titulo: "Convite de Aniversário",
+        preco: 9.90
+      },
+
+      2: {
+        titulo: "Topo de Bolo",
+        preco: 8.90
+      },
+
+      3: {
+        titulo: "Cartão Especial",
+        preco: 5.90
+      },
+
+      4: {
+        titulo: "Arquivo para Imprimir",
+        preco: 10.90
+      }
+    };
+
+    // Recebe os produtos enviados pelo site
+    const itensRecebidos =
+      Array.isArray(req.body?.items)
+        ? req.body.items
+        : [];
+
+    if (itensRecebidos.length === 0) {
       return res.status(400).json({
         erro: "Carrinho vazio."
       });
     }
 
-    const itensMercadoPago = items.map((item) => {
+    // Monta os itens para o Mercado Pago
+    const items = itensRecebidos.map((item) => {
       const produto = catalogo[Number(item.produtoId)];
 
       if (!produto) {
-        throw new Error("Produto inválido.");
+        throw new Error(
+          `Produto inválido: ${item.produtoId}`
+        );
       }
 
       return {
@@ -58,26 +77,32 @@ export default async function handler(req, res) {
         description: "Arte personalizada Vall Sena",
         quantity: 1,
         currency_id: "BRL",
-        unit_price: produto.preco
+        unit_price: Number(produto.preco)
       };
     });
 
-    const baseUrl = appUrl.replace(/\/$/, "");
-
+    // Cria a preferência de pagamento
     const preferencia = {
-      items: itensMercadoPago,
+      items,
 
-      external_reference: `VALLSENA-${Date.now()}`,
+      external_reference:
+        `VALLSENA-${Date.now()}`,
 
       back_urls: {
-        success: `${baseUrl}/?pagamento=sucesso`,
-        pending: `${baseUrl}/?pagamento=pendente`,
-        failure: `${baseUrl}/?pagamento=falhou`
+        success:
+          `${appUrl}/?pagamento=sucesso`,
+
+        pending:
+          `${appUrl}/?pagamento=pendente`,
+
+        failure:
+          `${appUrl}/?pagamento=falhou`
       },
 
       auto_return: "approved"
     };
 
+    // Envia para o Mercado Pago
     const resposta = await fetch(
       "https://api.mercadopago.com/checkout/preferences",
       {
@@ -94,15 +119,17 @@ export default async function handler(req, res) {
 
     const dados = await resposta.json();
 
+    // Trata erro do Mercado Pago
     if (!resposta.ok) {
       return res.status(resposta.status).json({
         erro:
           dados.message ||
           dados.error ||
-          "Erro no Mercado Pago."
+          "Erro ao criar pagamento no Mercado Pago."
       });
     }
 
+    // Escolhe o link de pagamento
     const url =
       ambiente === "PROD"
         ? dados.init_point
@@ -114,14 +141,19 @@ export default async function handler(req, res) {
       });
     }
 
+    // Retorna o link para o site
     return res.status(200).json({
       url,
       preference_id: dados.id
     });
 
   } catch (erro) {
+    console.error("Erro:", erro);
+
     return res.status(500).json({
-      erro: erro.message || "Erro interno ao criar pagamento."
+      erro:
+        erro.message ||
+        "Erro interno ao criar pagamento."
     });
   }
 }
