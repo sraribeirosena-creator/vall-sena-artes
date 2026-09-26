@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-  // Aceita somente POST
   if (req.method !== "POST") {
     return res.status(405).json({
       erro: "Método não permitido."
@@ -7,49 +6,41 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Variáveis configuradas no Vercel
     const accessToken = process.env.PAGBANK_TOKEN;
     const appUrl = process.env.APP_URL;
     const ambiente = process.env.PAGBANK_ENV || "SANDBOX";
 
-    // Verifica o token
     if (!accessToken) {
       return res.status(500).json({
-        erro: "Token do PagBank não configurado."
+        erro: "Token do PagBank não configurado no Vercel."
       });
     }
 
-    // Verifica a URL do site
     if (!appUrl) {
       return res.status(500).json({
-        erro: "APP_URL não configurado."
+        erro: "APP_URL não configurado no Vercel."
       });
     }
 
-    // Catálogo de produtos
     const catalogo = {
       1: {
         titulo: "Convite de Aniversário",
         preco: 9.90
       },
-
       2: {
         titulo: "Topo de Bolo",
         preco: 8.90
       },
-
       3: {
         titulo: "Cartão Especial",
         preco: 5.90
       },
-
       4: {
         titulo: "Arquivo para Imprimir",
         preco: 10.90
       }
     };
 
-    // Produtos enviados pelo site
     const itensRecebidos = Array.isArray(req.body?.items)
       ? req.body.items
       : [];
@@ -60,7 +51,6 @@ export default async function handler(req, res) {
       });
     }
 
-    // Monta os produtos para o PagBank
     const items = itensRecebidos.map((item) => {
       const produto = catalogo[Number(item.produtoId)];
 
@@ -73,17 +63,15 @@ export default async function handler(req, res) {
       return {
         reference_id: String(item.produtoId),
         name: produto.titulo,
-        description: "Arte personalizada Vall Sena",
         quantity: 1,
         unit_amount: Math.round(produto.preco * 100)
       };
     });
 
-    // Dados do Checkout PagBank
     const checkout = {
       reference_id: `VALLSENA-${Date.now()}`,
 
-      items,
+      items: items,
 
       redirect_url: `${appUrl}/?pagamento=sucesso`,
 
@@ -98,13 +86,11 @@ export default async function handler(req, res) {
       ]
     };
 
-    // Ambiente PagBank
     const apiUrl =
       ambiente === "PROD"
         ? "https://api.pagseguro.com/checkouts"
         : "https://sandbox.api.pagseguro.com/checkouts";
 
-    // Cria o Checkout
     const resposta = await fetch(apiUrl, {
       method: "POST",
 
@@ -119,7 +105,6 @@ export default async function handler(req, res) {
 
     const dados = await resposta.json();
 
-    // Trata erros do PagBank
     if (!resposta.ok) {
       console.error("Erro PagBank:", dados);
 
@@ -127,31 +112,29 @@ export default async function handler(req, res) {
         erro:
           dados.message ||
           dados.error ||
-          "Erro ao criar checkout no PagBank.",
-        detalhes: dados
+          "Erro ao criar checkout no PagBank."
       });
     }
 
-    // Procura o link de pagamento
     const linkPagamento = Array.isArray(dados.links)
-      ? dados.links.find((link) => link.rel === "PAY")
+      ? dados.links.find(
+          (link) => link.rel === "PAY"
+        )
       : null;
 
-    if (!linkPagamento?.href) {
+    if (!linkPagamento || !linkPagamento.href) {
       return res.status(500).json({
-        erro: "PagBank não retornou o link de pagamento.",
-        resposta: dados
+        erro: "O PagBank não retornou o link de pagamento."
       });
     }
 
-    // Retorna o link para o seu site
     return res.status(200).json({
       url: linkPagamento.href,
       checkout_id: dados.id
     });
 
   } catch (erro) {
-    console.error("Erro:", erro);
+    console.error("Erro interno:", erro);
 
     return res.status(500).json({
       erro:
