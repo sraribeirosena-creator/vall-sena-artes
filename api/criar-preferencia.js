@@ -8,21 +8,21 @@ export default async function handler(req, res) {
 
   try {
     // Variáveis configuradas no Vercel
-    const accessToken = process.env.MP_ACCESS_TOKEN;
+    const accessToken = process.env.PAGBANK_TOKEN;
     const appUrl = process.env.APP_URL;
-    const ambiente = process.env.MP_ENV || "TESTE";
+    const ambiente = process.env.PAGBANK_ENV || "SANDBOX";
 
-    // Verifica o Access Token
+    // Verifica o token
     if (!accessToken) {
       return res.status(500).json({
-        erro: "Token de acesso do Mercado Pago não configurado."
+        erro: "Token do PagBank não configurado."
       });
     }
 
     // Verifica a URL do site
     if (!appUrl) {
       return res.status(500).json({
-        erro: "APP_URL não definido."
+        erro: "APP_URL não configurado."
       });
     }
 
@@ -49,11 +49,10 @@ export default async function handler(req, res) {
       }
     };
 
-    // Recebe os produtos enviados pelo site
-    const itensRecebidos =
-      Array.isArray(req.body?.items)
-        ? req.body.items
-        : [];
+    // Produtos enviados pelo site
+    const itensRecebidos = Array.isArray(req.body?.items)
+      ? req.body.items
+      : [];
 
     if (itensRecebidos.length === 0) {
       return res.status(400).json({
@@ -61,7 +60,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // Monta os itens para o Mercado Pago
+    // Monta os produtos para o PagBank
     const items = itensRecebidos.map((item) => {
       const produto = catalogo[Number(item.produtoId)];
 
@@ -72,79 +71,83 @@ export default async function handler(req, res) {
       }
 
       return {
-        id: String(item.produtoId),
-        title: produto.titulo,
+        reference_id: String(item.produtoId),
+        name: produto.titulo,
         description: "Arte personalizada Vall Sena",
         quantity: 1,
-        currency_id: "BRL",
-        unit_price: Number(produto.preco)
+        unit_amount: Math.round(produto.preco * 100)
       };
     });
 
-    // Cria a preferência de pagamento
-    const preferencia = {
+    // Dados do Checkout PagBank
+    const checkout = {
+      reference_id: `VALLSENA-${Date.now()}`,
+
       items,
 
-      external_reference:
-        `VALLSENA-${Date.now()}`,
+      redirect_url: `${appUrl}/?pagamento=sucesso`,
 
-      back_urls: {
-        success:
-          `${appUrl}/?pagamento=sucesso`,
+      return_url: appUrl,
 
-        pending:
-          `${appUrl}/?pagamento=pendente`,
+      notification_urls: [
+        `${appUrl}/api/notificacao`
+      ],
 
-        failure:
-          `${appUrl}/?pagamento=falhou`
-      },
-
-      auto_return: "approved"
+      payment_notification_urls: [
+        `${appUrl}/api/notificacao`
+      ]
     };
 
-    // Envia para o Mercado Pago
-    const resposta = await fetch(
-      "https://api.mercadopago.com/checkout/preferences",
-      {
-        method: "POST",
+    // Ambiente PagBank
+    const apiUrl =
+      ambiente === "PROD"
+        ? "https://api.pagseguro.com/checkouts"
+        : "https://sandbox.api.pagseguro.com/checkouts";
 
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${accessToken}`
-        },
+    // Cria o Checkout
+    const resposta = await fetch(apiUrl, {
+      method: "POST",
 
-        body: JSON.stringify(preferencia)
-      }
-    );
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": `Bearer ${accessToken}`
+      },
+
+      body: JSON.stringify(checkout)
+    });
 
     const dados = await resposta.json();
 
-    // Trata erro do Mercado Pago
+    // Trata erros do PagBank
     if (!resposta.ok) {
+      console.error("Erro PagBank:", dados);
+
       return res.status(resposta.status).json({
         erro:
           dados.message ||
           dados.error ||
-          "Erro ao criar pagamento no Mercado Pago."
+          "Erro ao criar checkout no PagBank.",
+        detalhes: dados
       });
     }
 
-    // Escolhe o link de pagamento
-    const url =
-      ambiente === "PROD"
-        ? dados.init_point
-        : (dados.sandbox_init_point || dados.init_point);
+    // Procura o link de pagamento
+    const linkPagamento = Array.isArray(dados.links)
+      ? dados.links.find((link) => link.rel === "PAY")
+      : null;
 
-    if (!url) {
+    if (!linkPagamento?.href) {
       return res.status(500).json({
-        erro: "Mercado Pago não retornou o link de pagamento."
+        erro: "PagBank não retornou o link de pagamento.",
+        resposta: dados
       });
     }
 
-    // Retorna o link para o site
+    // Retorna o link para o seu site
     return res.status(200).json({
-      url,
-      preference_id: dados.id
+      url: linkPagamento.href,
+      checkout_id: dados.id
     });
 
   } catch (erro) {
