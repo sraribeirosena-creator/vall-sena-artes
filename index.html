@@ -1188,7 +1188,7 @@ observacoes:item.observacoes||""
 fetch("/api/criar-preferencia",{
 method:"POST",
 headers:{"Content-Type":"application/json"},
-body:JSON.stringify({itens})
+body:JSON.stringify({items: itens})
 })
 .then(async resposta=>{
 const dados=await resposta.json();
