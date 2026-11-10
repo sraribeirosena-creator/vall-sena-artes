@@ -90,7 +90,22 @@ export default async function handler(req, res) {
       body: JSON.stringify(checkout)
     });
 
-    const dados = await resposta.json();
+    
+const textoResposta = await resposta.text();
+
+let dados = {};
+
+try {
+  dados = textoResposta ? JSON.parse(textoResposta) : {};
+} catch (erro) {
+  console.error("Resposta inválida do PagBank:", textoResposta);
+
+  return res.status(502).json({
+    erro: "O PagBank retornou uma resposta inválida.",
+    detalhes: textoResposta
+  });
+}
+
 
     if (!resposta.ok) {
       console.error("Erro PagBank:", dados);
