@@ -107,7 +107,22 @@ try {
 }
 
 
-    if (!resposta.ok) {
+    
+if (!resposta.ok) {
+  console.error("ERRO PAGBANK:", {
+    status: resposta.status,
+    statusText: resposta.statusText,
+    resposta: textoResposta,
+    dados: dados
+  });
+
+  return res.status(502).json({
+    erro: "Erro ao criar checkout no PagBank.",
+    status: resposta.status,
+    detalhes: textoResposta || "Resposta vazia do PagBank."
+  });
+}
+
       console.error("Erro PagBank:", dados);
 
       return res.status(resposta.status).json({
