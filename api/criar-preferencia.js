@@ -49,7 +49,9 @@ export default async function handler(req, res) {
     }
 
     const items = recebidos.map((item) => {
-      const id = Number(item.produtoId);
+      const id = Number(
+  item.produtoId ?? item.productId ?? item.id
+);
       const produto = catalogo[id];
 
       if (!produto) {
