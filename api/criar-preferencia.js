@@ -17,13 +17,12 @@ export default async function handler(req, res) {
       });
     }
 
-    if (!appUrl) {
+    if (!appUrl || !appUrl.startsWith("https://")) {
       return res.status(500).json({
-        erro: "APP_URL não configurado."
+        erro: "APP_URL inválido ou não configurado."
       });
     }
 
-    // Catálogo oficial da loja
     const catalogo = {
       1: { titulo: "Convite de Aniversário", preco: 9.90 },
       2: { titulo: "Convite de Casamento", preco: 14.90 },
@@ -37,30 +36,28 @@ export default async function handler(req, res) {
       10: { titulo: "Arquivo para Imprimir", preco: 10.90 }
     };
 
-    // Aceita os dois nomes usados pelo site
-    const itensRecebidos = Array.isArray(req.body?.itens)
+    const recebidos = Array.isArray(req.body?.itens)
       ? req.body.itens
       : Array.isArray(req.body?.items)
         ? req.body.items
         : [];
 
-    if (itensRecebidos.length === 0) {
+    if (!recebidos.length) {
       return res.status(400).json({
         erro: "Carrinho vazio."
       });
     }
 
-    const items = itensRecebidos.map((item) => {
-      const produto = catalogo[Number(item.produtoId)];
+    const items = recebidos.map((item) => {
+      const id = Number(item.produtoId);
+      const produto = catalogo[id];
 
       if (!produto) {
-        throw new Error(
-          `Produto inválido: ${item.produtoId}`
-        );
+        throw new Error(`Produto inválido: ${id}`);
       }
 
       return {
-        reference_id: String(item.produtoId),
+        reference_id: String(id),
         name: produto.titulo,
         quantity: 1,
         unit_amount: Math.round(produto.preco * 100)
@@ -90,55 +87,44 @@ export default async function handler(req, res) {
       body: JSON.stringify(checkout)
     });
 
-    
-const textoResposta = await resposta.text();
+    const textoResposta = await resposta.text();
 
-let dados = {};
+    let dados = {};
 
-try {
-  dados = textoResposta ? JSON.parse(textoResposta) : {};
-} catch (erro) {
-  console.error("Resposta inválida do PagBank:", textoResposta);
+    try {
+      dados = textoResposta ? JSON.parse(textoResposta) : {};
+    } catch {
+      console.error("Resposta inválida PagBank:", textoResposta);
 
-  return res.status(502).json({
-    erro: "O PagBank retornou uma resposta inválida.",
-    detalhes: textoResposta
-  });
-}
+      return res.status(502).json({
+        erro: "Resposta inválida do PagBank.",
+        detalhes: textoResposta
+      });
+    }
 
+    if (!resposta.ok) {
+      console.error("ERRO PAGBANK:", {
+        status: resposta.status,
+        resposta: dados
+      });
 
-    
-if (!resposta.ok) {
-  console.error("ERRO PAGBANK:", {
-    status: resposta.status,
-    statusText: resposta.statusText,
-    resposta: textoResposta,
-    dados: dados
-  });
-
-  return res.status(502).json({
-    erro: "Erro ao criar checkout no PagBank.",
-    status: resposta.status,
-    detalhes: textoResposta || "Resposta vazia do PagBank."
-  });
-}
-
-      console.error("Erro PagBank:", dados);
-
-      return res.status(resposta.status).json({
-        erro: dados.message ||
-          dados.error ||
-          "Erro ao criar checkout no PagBank."
+      return res.status(502).json({
+        erro: "Erro ao criar checkout no PagBank.",
+        status: resposta.status,
+        detalhes: dados
       });
     }
 
     const linkPagamento = dados.links?.find(
-      (link) => link.rel === "PAY"
+      link => link.rel === "PAY"
     );
 
     if (!linkPagamento?.href) {
-      return res.status(500).json({
-        erro: "PagBank não retornou o link de pagamento."
+      console.error("Link de pagamento ausente:", dados);
+
+      return res.status(502).json({
+        erro: "PagBank não retornou o link de pagamento.",
+        detalhes: dados
       });
     }
 
@@ -151,8 +137,7 @@ if (!resposta.ok) {
     console.error("Erro interno:", erro);
 
     return res.status(500).json({
-      erro: erro.message ||
-        "Erro interno ao criar pagamento."
+      erro: erro.message || "Erro interno ao criar pagamento."
     });
   }
 }
