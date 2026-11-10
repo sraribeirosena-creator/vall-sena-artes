@@ -1,3 +1,4 @@
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({
@@ -12,38 +13,36 @@ export default async function handler(req, res) {
 
     if (!accessToken) {
       return res.status(500).json({
-        erro: "Token do PagBank não configurado no Vercel."
+        erro: "Token PagBank não configurado."
       });
     }
 
     if (!appUrl) {
       return res.status(500).json({
-        erro: "APP_URL não configurado no Vercel."
+        erro: "APP_URL não configurado."
       });
     }
 
+    // Catálogo oficial da loja
     const catalogo = {
-      1: {
-        titulo: "Convite de Aniversário",
-        preco: 9.90
-      },
-      2: {
-        titulo: "Topo de Bolo",
-        preco: 8.90
-      },
-      3: {
-        titulo: "Cartão Especial",
-        preco: 5.90
-      },
-      4: {
-        titulo: "Arquivo para Imprimir",
-        preco: 10.90
-      }
+      1: { titulo: "Convite de Aniversário", preco: 9.90 },
+      2: { titulo: "Convite de Casamento", preco: 14.90 },
+      3: { titulo: "Kit Festa Completo", preco: 19.90 },
+      4: { titulo: "Figurinhas WhatsApp", preco: 7.90 },
+      5: { titulo: "Artes para Stories", preco: 8.90 },
+      6: { titulo: "Etiquetas Personalizadas", preco: 6.90 },
+      7: { titulo: "Lembrancinhas", preco: 12.90 },
+      8: { titulo: "Topo de Bolo", preco: 8.90 },
+      9: { titulo: "Cartão Especial", preco: 5.90 },
+      10: { titulo: "Arquivo para Imprimir", preco: 10.90 }
     };
 
-    const itensRecebidos = Array.isArray(req.body?.items)
-      ? req.body.items
-      : [];
+    // Aceita os dois nomes usados pelo site
+    const itensRecebidos = Array.isArray(req.body?.itens)
+      ? req.body.itens
+      : Array.isArray(req.body?.items)
+        ? req.body.items
+        : [];
 
     if (itensRecebidos.length === 0) {
       return res.status(400).json({
@@ -68,38 +67,26 @@ export default async function handler(req, res) {
       };
     });
 
+    const baseUrl = appUrl.replace(/\/+$/, "");
+
     const checkout = {
       reference_id: `VALLSENA-${Date.now()}`,
-
-      items: items,
-
-      redirect_url: `${appUrl}/?pagamento=sucesso`,
-
-      return_url: appUrl,
-
-      notification_urls: [
-        `${appUrl}/api/notificacao`
-      ],
-
-      payment_notification_urls: [
-        `${appUrl}/api/notificacao`
-      ]
+      items,
+      redirect_url: `${baseUrl}/?pagamento=retorno`,
+      return_url: baseUrl
     };
 
-    const apiUrl =
-      ambiente === "PROD"
-        ? "https://api.pagseguro.com/checkouts"
-        : "https://sandbox.api.pagseguro.com/checkouts";
+    const apiUrl = ambiente === "PROD"
+      ? "https://api.pagseguro.com/checkouts"
+      : "https://sandbox.api.pagseguro.com/checkouts";
 
     const resposta = await fetch(apiUrl, {
       method: "POST",
-
       headers: {
         "Content-Type": "application/json",
         "Accept": "application/json",
         "Authorization": `Bearer ${accessToken}`
       },
-
       body: JSON.stringify(checkout)
     });
 
@@ -109,22 +96,19 @@ export default async function handler(req, res) {
       console.error("Erro PagBank:", dados);
 
       return res.status(resposta.status).json({
-        erro:
-          dados.message ||
+        erro: dados.message ||
           dados.error ||
           "Erro ao criar checkout no PagBank."
       });
     }
 
-    const linkPagamento = Array.isArray(dados.links)
-      ? dados.links.find(
-          (link) => link.rel === "PAY"
-        )
-      : null;
+    const linkPagamento = dados.links?.find(
+      (link) => link.rel === "PAY"
+    );
 
-    if (!linkPagamento || !linkPagamento.href) {
+    if (!linkPagamento?.href) {
       return res.status(500).json({
-        erro: "O PagBank não retornou o link de pagamento."
+        erro: "PagBank não retornou o link de pagamento."
       });
     }
 
@@ -137,8 +121,7 @@ export default async function handler(req, res) {
     console.error("Erro interno:", erro);
 
     return res.status(500).json({
-      erro:
-        erro.message ||
+      erro: erro.message ||
         "Erro interno ao criar pagamento."
     });
   }
