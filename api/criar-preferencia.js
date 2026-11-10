@@ -1,5 +1,5 @@
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({
       erro: "Método não permitido."
@@ -50,8 +50,9 @@ export default async function handler(req, res) {
 
     const items = recebidos.map((item) => {
       const id = Number(
-  item.produtoId ?? item.productId ?? item.id
-);
+        item.produtoId ?? item.productId ?? item.id
+      );
+
       const produto = catalogo[id];
 
       if (!produto) {
@@ -94,9 +95,11 @@ export default async function handler(req, res) {
     let dados = {};
 
     try {
-      dados = textoResposta ? JSON.parse(textoResposta) : {};
+      dados = textoResposta
+        ? JSON.parse(textoResposta)
+        : {};
     } catch {
-      console.error("Resposta inválida PagBank:", textoResposta);
+      console.error("Resposta PagBank não JSON:", textoResposta);
 
       return res.status(502).json({
         erro: "Resposta inválida do PagBank.",
@@ -104,26 +107,11 @@ export default async function handler(req, res) {
       });
     }
 
-    
-if (!resposta.ok) {
-  console.error("ERRO PAGBANK DETALHADO:", {
-    status: resposta.status,
-    statusText: resposta.statusText,
-    respostaOriginal: textoResposta,
-    contentType: resposta.headers.get("content-type"),
-    requestId: resposta.headers.get("x-request-id")
-  });
-
-  return res.status(502).json({
-    erro: "Erro ao criar checkout no PagBank.",
-    status: resposta.status,
-    detalhes: textoResposta || "Resposta vazia do PagBank."
-  });
-}
-
+    if (!resposta.ok) {
       console.error("ERRO PAGBANK:", {
         status: resposta.status,
-        resposta: dados
+        resposta: dados,
+        requestId: resposta.headers.get("x-request-id")
       });
 
       return res.status(502).json({
@@ -138,8 +126,6 @@ if (!resposta.ok) {
     );
 
     if (!linkPagamento?.href) {
-      console.error("Link de pagamento ausente:", dados);
-
       return res.status(502).json({
         erro: "PagBank não retornou o link de pagamento.",
         detalhes: dados
@@ -158,4 +144,4 @@ if (!resposta.ok) {
       erro: erro.message || "Erro interno ao criar pagamento."
     });
   }
-}
+};
