@@ -104,7 +104,23 @@ export default async function handler(req, res) {
       });
     }
 
-    if (!resposta.ok) {
+    
+if (!resposta.ok) {
+  console.error("ERRO PAGBANK DETALHADO:", {
+    status: resposta.status,
+    statusText: resposta.statusText,
+    respostaOriginal: textoResposta,
+    contentType: resposta.headers.get("content-type"),
+    requestId: resposta.headers.get("x-request-id")
+  });
+
+  return res.status(502).json({
+    erro: "Erro ao criar checkout no PagBank.",
+    status: resposta.status,
+    detalhes: textoResposta || "Resposta vazia do PagBank."
+  });
+}
+
       console.error("ERRO PAGBANK:", {
         status: resposta.status,
         resposta: dados
